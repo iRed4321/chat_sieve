@@ -1,0 +1,48 @@
+{
+    "helloWorld": "Salut le Monde!",
+    "pseudo": "Pseudos",
+    "home": "Résumer",
+    "settings": "Paramètres",
+    "runSummerization": "Résumer !",
+    "convName": "Nom de la conversation à résumer",
+    "apiKey": "Votre clé d'API OpenAI",
+    "loadJson": "Charger des notifications depuis un fichier Json. Cela supprimera tout les messages précédemment enregistrés.",
+    "deleteAll": "Supprimer tout les messages enregistrés, cette action est définitive.",
+    "addBtn": "Importer",
+    "deleteBtn": "Supprimer",
+    "errorHttp": "Erreur: Veuillez vérifier votre connexion internet et la validité de votre clé API OpenAI.",
+    "importSuccess": "{nbMsg} messages importés avec succès.",
+    "@importSuccess": {
+        "placeholders": {
+            "nbMsg": {
+              "type": "int",
+              "example": "42"
+            }
+          }
+    },
+    "peopleAdd": "Ajouter un pseudo",
+    "peopleChange": "Modifier un pseudo",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "realName": "Vrai nom",
+    "pseudoName": "Pseudo",
+    "aiIntro": "{prompt}. Cette conversation peut se résumer en ${nbPoints} points:",
+    "@aiIntro": {
+      "placeholders": {
+        "prompt": {
+          "type": "String"
+        },
+        "nbPoints": {
+          "type": "int"
+        }
+      }
+    },
+    "lastMsgs": "Messages",
+    "lastMsgsSubtitle": "Les derniers messages de la conversation",
+    "advancedSettings": "Paramètres avancés",
+    "service": "Réception des notifications",
+    "serviceActive": "Service actif",
+    "serviceUnactive": "Service désactivé",
+    "waitingIsActive": "Vérification de l'état du service...",
+    "convNameDefault": "Ma conversation"
+}

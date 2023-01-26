@@ -1,0 +1,51 @@
+{
+    "helloWorld": "Hello World!",
+    "@helloWorld": {
+      "description": "The conventional newborn programmer greeting"
+    },
+    "pseudo": "Nicknames",
+    "home": "Summerize",
+    "settings": "Settings",
+    "runSummerization": "Summerize !",
+    "convName": "Name of the conversation to summerize",
+    "apiKey": "Your OpenAI API Key",
+    "loadJson": "Load notifications from a json file. This will erase all previous saved notifications.",
+    "deleteAll": "Delete all the notifications messages saved, this action can't be undone",
+    "addBtn": "Import",
+    "deleteBtn": "Delete",
+    "errorHttp": "Error: Please check your internet access and your OpenAI API key validity.",
+    "importSuccess": "{nbMsg} messages successfully loaded.",
+    "@importSuccess": {
+        "placeholders": {
+            "nbMsg": {
+              "type": "int",
+              "example": "42"
+            }
+          }
+    },
+    "peopleAdd": "Add a nickname",
+    "peopleChange": "Change a nickname",
+    "cancel": "Cancel",
+    "add": "Add",
+    "realName": "Real name",
+    "pseudoName": "Nickname",
+    "aiIntro": "{prompt}. This conversation can be summerized in ${nbPoints} points:",
+    "@aiIntro": {
+      "placeholders": {
+        "prompt": {
+          "type": "String"
+        },
+        "nbPoints": {
+          "type": "int"
+        }
+      }
+    },
+    "lastMsgs": "Messages",
+    "lastMsgsSubtitle": "The last messages of the conversation",
+    "advancedSettings": "Advanced settings",
+    "service": "Notifications reception",
+    "serviceActive": "Service enabled",
+    "serviceUnactive": "Service disabled",
+    "waitingIsActive": "Checking service state...",
+    "convNameDefault": "My conversation"
+  }
