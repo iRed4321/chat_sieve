@@ -4,10 +4,10 @@
       "description": "The conventional newborn programmer greeting"
     },
     "pseudo": "Nicknames",
-    "home": "Summerize",
+    "home": "Summarize",
     "settings": "Settings",
-    "runSummerization": "Summerize !",
-    "convName": "Name of the conversation to summerize",
+    "runSummerization": "Summarize !",
+    "convName": "Name of the conversation to summarize",
     "apiKey": "Your OpenAI API Key",
     "loadJson": "Load notifications from a json file. This will erase all previous saved notifications.",
     "deleteAll": "Delete all the notifications messages saved, this action can't be undone",
@@ -29,7 +29,7 @@
     "add": "Add",
     "realName": "Real name",
     "pseudoName": "Nickname",
-    "aiIntro": "{prompt}. This conversation can be summerized in ${nbPoints} points:",
+    "aiIntro": "{prompt}. This conversation can be summarized in ${nbPoints} points:",
     "@aiIntro": {
       "placeholders": {
         "prompt": {

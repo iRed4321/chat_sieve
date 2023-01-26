@@ -2,6 +2,7 @@
     package="ired4321.shrink_that_conv">
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="ShrinkThatConv"
         android:name="${applicationName}"
