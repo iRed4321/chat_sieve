@@ -9,20 +9,13 @@ class LastMsgsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppModel>(builder: (context, model, child) {
       return FutureBuilder(
-        future: model.getLastMsgs(),
+        future: model.getMsgs(true),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
-              body: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView.builder(
-                  itemCount: snapshot.data!.list.length,
-                  itemBuilder: (context, index) {
-                    return Text(snapshot.data!.list[index].toPrettyString());
-                  },
-                ),
-              ),
-            );
+                body: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(snapshot.data!.toPrettyString())));
           }
           return const CircularProgressIndicator();
         },

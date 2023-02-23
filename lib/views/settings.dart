@@ -2,7 +2,9 @@ import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:awaitable_button/awaitable_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provider/provider.dart';
+import 'package:shrink_that_conv/models/params.dart';
 import '../models/app.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -11,7 +13,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppModel>(
-        builder: (context, model, child) => FutureBuilder<Map<String, String>>(
+        builder: (context, model, child) => FutureBuilder<Map<Param, dynamic>>(
             future: model.getSettings(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -69,17 +71,45 @@ class SettingsPage extends StatelessWidget {
                             TextFormField(
                               keyboardType: TextInputType.multiline,
                               maxLines: 1,
-                              initialValue: snapshot.data!['convName'] != ""
-                                  ? snapshot.data!['convName']
-                                  : context.loc.convNameDefault,
+                              initialValue:
+                                  snapshot.data![Param.conversationName] != ""
+                                      ? snapshot.data![Param.conversationName]
+                                      : context.loc.convNameDefault,
                               decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.all(10),
                                   border: OutlineInputBorder(),
                                   isDense: true),
                               onChanged: (String value) async {
-                                model.setConvName(value);
+                                // model.setConvName(value);
+                                Param.conversationName.set = value;
+                                model.makeUpdateUi();
                               },
                             )
+                          ],
+                        ),
+                      )),
+                      const SizedBox(height: 10),
+                      Card(
+                          child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Wrap(
+                          children: <Widget>[
+                            Text(context.loc.outputLength),
+                            const SizedBox(height: 30),
+                            Slider(
+                                value: int.parse(snapshot
+                                        .data![Param.outputLength]
+                                        .toString())
+                                    .toDouble(),
+                                divisions: 4,
+                                label: 'x${snapshot.data![Param.outputLength]}',
+                                min: 0,
+                                max: 4,
+                                onChanged: (value) async {
+                                  Param.outputLength.set =
+                                      value.round().toString();
+                                  model.makeUpdateUi();
+                                })
                           ],
                         ),
                       )),
@@ -94,15 +124,17 @@ class SettingsPage extends StatelessWidget {
                             TextFormField(
                               keyboardType: TextInputType.multiline,
                               maxLines: 2,
-                              initialValue: snapshot.data!['openAiKey'] != ""
-                                  ? snapshot.data!['openAiKey']
-                                  : "sk-",
+                              initialValue:
+                                  snapshot.data![Param.openAiKey] != ""
+                                      ? snapshot.data![Param.openAiKey]
+                                      : "sk-",
                               decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.all(10),
                                   border: OutlineInputBorder(),
                                   isDense: true),
                               onChanged: (String value) {
-                                model.setOpenAiKey(value);
+                                Param.openAiKey.set = value;
+                                model.makeUpdateUi();
                               },
                             )
                           ],
@@ -122,6 +154,37 @@ class SettingsPage extends StatelessWidget {
                             AwaitableElevatedButton(
                                 onPressed: () async {
                                   await model.deleteAllMsgs();
+                                },
+                                buttonStyle: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.red[900]!),
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.white)),
+                                child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.delete),
+                                      Text(context.loc.deleteBtn)
+                                    ]))
+                          ],
+                        ),
+                      )),
+                      const SizedBox(height: 10),
+                      Card(
+                          child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Wrap(
+                          alignment: WrapAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 40, 16),
+                              child: Text(context.loc.deleteAllSummaries),
+                            ),
+                            AwaitableElevatedButton(
+                                onPressed: () async {
+                                  await model.deleteAllSummaries();
                                 },
                                 buttonStyle: ButtonStyle(
                                     backgroundColor:
@@ -182,6 +245,37 @@ class SettingsPage extends StatelessWidget {
                                         children: [
                                           const Icon(Icons.add),
                                           Text(context.loc.addBtn)
+                                        ]))
+                              ],
+                            ),
+                          )),
+                          const SizedBox(height: 10),
+                          Card(
+                              child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Wrap(
+                              alignment: WrapAlignment.end,
+                              children: <Widget>[
+                                Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 40, 16),
+                                    child: Text(context.loc.exportJson)),
+                                AwaitableElevatedButton(
+                                    onPressed: () async {
+                                      model.exportJson();
+                                    },
+                                    buttonStyle: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.green[900]!),
+                                        foregroundColor:
+                                            MaterialStateColor.resolveWith(
+                                                (states) => Colors.white)),
+                                    child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(Icons.output),
+                                          Text(context.loc.exportBtn)
                                         ]))
                               ],
                             ),

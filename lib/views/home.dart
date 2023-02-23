@@ -1,3 +1,4 @@
+import 'package:awaitable_button/awaitable_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/app.dart';
@@ -24,17 +25,9 @@ class HomePage extends StatelessWidget {
                   return Expanded(
                     child: ListView.builder(
                       reverse: true,
-                      itemCount:
-                          snapshot.data!.length + (model.loading ? 1 : 0),
+                      itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        if (index == 0 && model.loading) {
-                          return const Center(
-                              child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: CircularProgressIndicator(),
-                          ));
-                        }
-                        int currIndex = model.loading ? index - 1 : index;
+                        int currIndex = index;
                         return Dismissible(
                           key: UniqueKey(),
                           child: Card(
@@ -47,6 +40,7 @@ class HomePage extends StatelessWidget {
                           onDismissed: (direction) async {
                             await model
                                 .deleteSummary(snapshot.data![currIndex].id);
+                            snapshot.data!.removeAt(currIndex);
                           },
                         );
                       },
@@ -58,11 +52,19 @@ class HomePage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20),
-            FloatingActionButton.extended(
-                onPressed: () async {
-                  await model.callAi(context.loc);
-                },
-                label: Text(context.loc.runSummerization)),
+            AwaitableElevatedButton<void>(
+              onPressed: () async {
+                await model.callAi(context.loc);
+              },
+              indicatorSize: const Size(20, 20),
+              buttonStyle: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(20),
+                  foregroundColor:
+                      Theme.of(context).colorScheme.onPrimaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer),
+              child: Text(context.loc.runSummerization),
+            )
           ],
         ),
       )));

@@ -7,13 +7,13 @@ class Msg {
   late String text;
   Msg(this.sender, this.text, this.postTime);
 
-  static String findSender(List<Participant> participants, String pseudo) {
+  String getSenderName(List<Participant> participants) {
     for (var item in participants) {
-      if (pseudo.toLowerCase().contains(item.pseudo)) {
-        return item.name;
+      if (sender.toLowerCase().contains(item.name.toLowerCase())) {
+        return item.pseudo;
       }
     }
-    return pseudo;
+    return sender;
   }
 
   static String formatMsg(String msg) {
@@ -33,9 +33,8 @@ class Msg {
     return msg;
   }
 
-  Msg.fromRawNotif(
-      List<Participant> people, dynamic sender, dynamic text, dynamic time) {
-    this.sender = findSender(people, sender.toString().split(': ').last);
+  Msg.fromRawNotif(dynamic sender, dynamic text, dynamic time) {
+    this.sender = sender.toString().split(': ').last;
     this.text = formatMsg(text.toString());
     postTime = time;
   }
@@ -48,7 +47,7 @@ class Msg {
   String toPrettyString() {
     DateTime date = DateTime.fromMicrosecondsSinceEpoch(postTime);
     String time = "${date.hour}:${date.minute}";
-    return "[$time] $sender: $text";
+    return "[$time] $sender: $text\n";
   }
 
   @override
@@ -64,6 +63,23 @@ class Msg {
       msgsMsg: text
     };
     return y;
+  }
+
+  Map<String, dynamic> toJson() {
+    var y = <String, dynamic>{
+      msgsTimeId: postTime,
+      msgsSender: sender,
+      msgsMsg: text
+    };
+    return y;
+  }
+
+  //fromJson
+
+  Msg.fromJson(Map<String, dynamic> json) {
+    postTime = json[msgsTimeId];
+    sender = json[msgsSender];
+    text = json[msgsMsg];
   }
 
   @override

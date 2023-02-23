@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import 'msg.dart';
+import 'params.dart';
 import 'people.dart';
 import 'summary.dart';
 
@@ -110,6 +111,11 @@ class DBHelper {
     });
 
     await db.insert(paramsTable, {
+      paramsName: 'outputLength',
+      paramsValue: '0',
+    });
+
+    await db.insert(paramsTable, {
       paramsName: 'conversationName',
       paramsValue: '',
     });
@@ -137,35 +143,16 @@ class DBHelper {
     return await db.delete(tableMsgs);
   }
 
-  // Params
-
-  //set openAiKey
-  Future setOpenAiKey(String key) async {
+  Future setParam(Param param, String value) async {
     Database db = await instance.db;
-    return await db.update(paramsTable, {paramsValue: key},
-        where: '$paramsName = ?', whereArgs: ['openAiKey']);
+    return await db.update(paramsTable, {paramsValue: value},
+        where: '$paramsName = ?', whereArgs: [param.getString()]);
   }
 
-  //get openAiKey
-  Future<String> getOpenAiKey() async {
-    Database db = await instance.db;
-    List<Map> rep = await db
-        .query(paramsTable, where: '$paramsName = ?', whereArgs: ['openAiKey']);
-    return rep[0][paramsValue];
-  }
-
-  //set conversationName
-  Future setConversationName(String name) async {
-    Database db = await instance.db;
-    return await db.update(paramsTable, {paramsValue: name},
-        where: '$paramsName = ?', whereArgs: ['conversationName']);
-  }
-
-  //get conversationName
-  Future<String> getConversationName() async {
+  Future<String> getParam(Param param) async {
     Database db = await instance.db;
     List<Map> rep = await db.query(paramsTable,
-        where: '$paramsName = ?', whereArgs: ['conversationName']);
+        where: '$paramsName = ?', whereArgs: [param.getString()]);
     return rep[0][paramsValue];
   }
 
@@ -178,6 +165,11 @@ class DBHelper {
   Future deleteSummary(int dateId) async {
     Database db = await instance.db;
     await db.delete(resumTable, where: '$resumTimeId = ?', whereArgs: [dateId]);
+  }
+
+  Future deleteAllSummaries() async {
+    Database db = await instance.db;
+    await db.delete(resumTable);
   }
 
   Future<List<Summary>> getSummaries() async {

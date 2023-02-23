@@ -1,9 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+// import 'package:notification_permissions/notification_permissions.dart'
+//     as NotifsPerm;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:pick_or_save/pick_or_save.dart';
+import 'package:shrink_that_conv/models/params.dart';
 import 'package:shrink_that_conv/models/people.dart';
 import 'package:shrink_that_conv/models/service.dart';
 import 'package:shrink_that_conv/models/view.dart';
@@ -24,19 +30,10 @@ class AppModel with ChangeNotifier {
   ServiceNotifListener service = ServiceNotifListener();
   ReceivePort port = ReceivePort();
   View _view = View.home;
-  // List<Participant>? participants;
-  bool loading = false;
-  // String? _openAiKey;
-  // String? _convName;
-  bool isReady = false;
-  late DBHelper _db;
 
+  late DBHelper _db;
   AppModel() {
     _db = DBHelper.instance;
-  }
-
-  void onData(NotificationEvent event) {
-    notifyListeners();
   }
 
   Future startListening() async {
@@ -57,18 +54,12 @@ class AppModel with ChangeNotifier {
     IsolateNameServer.removePortNameMapping("_listener_");
     IsolateNameServer.registerPortWithName(port.sendPort, "_listener_");
 
-    port.listen((evt) => onData(evt));
+    port.listen((evt) => makeUpdateUi(evt));
   }
 
   View get view => _view;
 
-  setOpenAiKey(String key) {
-    _db.setOpenAiKey(key);
-    notifyListeners();
-  }
-
-  setConvName(String name) {
-    _db.setConversationName(name);
+  makeUpdateUi([NotificationEvent? event]) {
     notifyListeners();
   }
 
@@ -81,9 +72,6 @@ class AppModel with ChangeNotifier {
     _view = View.values[v];
     notifyListeners();
   }
-
-  Future<String> get openAiKey async => await _db.getOpenAiKey();
-  Future<String> get convName async => await _db.getConversationName();
 
   Future<List<Participant>> getParticipants() async {
     return await _db.getParticipants();
@@ -113,38 +101,31 @@ class AppModel with ChangeNotifier {
     final File file = File(path);
     String text = await file.readAsString();
 
-    var reqdata = await jsonDecode(text);
-    var data = reqdata["posted"];
+    Iterable l = jsonDecode(text);
+    List<Msg> msgs = l.map((model) => Msg.fromJson(model)).toList();
 
-    List filteredList = [];
-
-    for (var item in data) {
-      if (item['packageName'] == "com.facebook.orca" &&
-          item['title'].contains(convName)) {
-        filteredList.add(item);
-      }
-    }
-
-    List<Participant> participants = await getParticipants();
     deleteAllMsgs();
-    for (var item in filteredList) {
-      Msg msg = Msg.fromRawNotif(
-          participants, item['title'], item['text'], item['postTime'] * 1000);
+    for (var msg in msgs) {
       await _db.addMsg(msg);
     }
 
-    return filteredList.length;
+    return msgs.length;
   }
 
-  Future<MsgList> getLastMsgs() async {
+  Future<MsgList> getMsgs(bool onlyLasts) async {
     List<Msg> msgs = await _db.getMsgs();
-    if (msgs.length > 15) {
+    if (onlyLasts && msgs.length > 15) {
       msgs.removeRange(0, msgs.length - 15);
+    }
+    List<Participant> participants = await _db.getParticipants();
+    for (var msg in msgs) {
+      msg.sender = msg.getSenderName(participants);
     }
     return MsgList(msgs);
   }
 
   Future<List<Summary>> getSummaries() async {
+    // await Future.delayed(const Duration(seconds: 1));
     return await _db.getSummaries().then((value) => value.reversed.toList());
   }
 
@@ -158,23 +139,26 @@ class AppModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Map<String, String>> getSettings() async {
-    Map<String, String> settings = {};
-    settings['openAiKey'] = await openAiKey;
-    settings['convName'] = await convName;
+  Future<void> deleteAllSummaries() async {
+    await _db.deleteAllSummaries();
+    notifyListeners();
+  }
+
+  Future<Map<Param, dynamic>> getSettings() async {
+    Map<Param, dynamic> settings = {};
+    settings[Param.openAiKey] = await Param.openAiKey.get;
+    settings[Param.conversationName] = await Param.conversationName.get;
+    settings[Param.outputLength] = await Param.outputLength.get;
     return settings;
   }
 
   Future<void> callAi(AppLocalizations locale) async {
-    loading = true;
     notifyListeners();
-    MsgList result = MsgList(await _db.getMsgs());
-    int nbPoints = (result.toString().characters.length / 400).floor() + 2;
-
-    String prompt =
-        result.toString().replaceAll("'", " ").replaceAll("\"", " ");
-
-    String key = await openAiKey;
+    String result = (await getMsgs(false)).toString();
+    int outputLength = int.parse(await Param.outputLength.get);
+    int nbPoints = 1 + (result.characters.length / 400).floor() + outputLength;
+    String prompt = result.replaceAll("'", " ").replaceAll("\"", " ");
+    String key = await Param.openAiKey.get;
 
     var headers = {
       'Content-Type': 'application/json',
@@ -185,13 +169,13 @@ class AppModel with ChangeNotifier {
       "model": "text-davinci-003",
       "prompt": locale.aiIntro(prompt, nbPoints),
       "temperature": 0.78,
-      "max_tokens": (result.toString().characters.length / 7).floor()
+      "max_tokens":
+          (result.toString().characters.length / (9 - outputLength)).floor()
     });
 
     var url = Uri.parse('https://api.openai.com/v1/completions');
     var res = await http.post(url, headers: headers, body: json);
 
-    loading = false;
     if (res.statusCode != 200) {
       addSummary(Summary(locale.errorHttp));
     } else {
@@ -201,5 +185,26 @@ class AppModel with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  Future<void> exportJson() async {
+    var allMsgs = await _db.getMsgs();
+
+    var json = jsonEncode(allMsgs);
+
+    //save to external storage
+    PermissionStatus permissionResult = await Permission.storage.request();
+    if (permissionResult == PermissionStatus.granted) {
+      await PickOrSave().fileSaver(
+        params: FileSaverParams(
+          saveFiles: [
+            SaveFileInfo(
+              fileName: "messages.json",
+              fileData: Uint8List.fromList(utf8.encode(json)),
+            )
+          ],
+        ),
+      );
+    }
   }
 }
