@@ -2,7 +2,7 @@ import 'db.dart';
 
 enum Param { openAiKey, outputLength, conversationName }
 
-extension Truc on Param {
+extension Utilities on Param {
   static final DBHelper _db = DBHelper.instance;
 
   set set(dynamic value) {

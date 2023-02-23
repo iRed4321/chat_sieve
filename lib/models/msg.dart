@@ -41,10 +41,6 @@ class Msg {
 
   @override
   String toString() {
-    return "[$postTime] $sender: $text\n";
-  }
-
-  String toPrettyString() {
     DateTime date = DateTime.fromMicrosecondsSinceEpoch(postTime);
     String time = "${date.hour}:${date.minute}";
     return "[$time] $sender: $text\n";
@@ -82,26 +78,4 @@ class Msg {
 
   @override
   int get hashCode => postTime.hashCode;
-}
-
-class MsgList {
-  List<Msg> list;
-  MsgList(this.list);
-
-  @override
-  String toString() {
-    String s = "";
-    for (Msg m in list) {
-      s += m.toString();
-    }
-    return s;
-  }
-
-  String toPrettyString() {
-    String s = "";
-    for (Msg m in list) {
-      s += m.toPrettyString();
-    }
-    return s.trim();
-  }
 }

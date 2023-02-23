@@ -110,7 +110,7 @@ class AppModel with ChangeNotifier {
     return msgs.length;
   }
 
-  Future<MsgList> getMsgs(bool onlyLasts) async {
+  Future<List<Msg>> getMsgs(bool onlyLasts) async {
     List<Msg> msgs = await _db.getMsgs();
     if (onlyLasts && msgs.length > 15) {
       msgs.removeRange(0, msgs.length - 15);
@@ -119,7 +119,7 @@ class AppModel with ChangeNotifier {
     for (var msg in msgs) {
       msg.sender = msg.getSenderName(participants);
     }
-    return MsgList(msgs);
+    return msgs;
   }
 
   Future<List<Summary>> getSummaries() async {

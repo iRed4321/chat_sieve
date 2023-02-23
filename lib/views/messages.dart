@@ -15,7 +15,7 @@ class LastMsgsPage extends StatelessWidget {
             return Scaffold(
                 body: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text(snapshot.data!.toPrettyString())));
+                    child: Text(snapshot.data!.join("").trim())));
           }
           return const CircularProgressIndicator();
         },
