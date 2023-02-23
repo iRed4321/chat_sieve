@@ -5,8 +5,6 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-// import 'package:notification_permissions/notification_permissions.dart'
-//     as NotifsPerm;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pick_or_save/pick_or_save.dart';
 import 'package:shrink_that_conv/models/params.dart';
@@ -125,7 +123,6 @@ class AppModel with ChangeNotifier {
   }
 
   Future<List<Summary>> getSummaries() async {
-    // await Future.delayed(const Duration(seconds: 1));
     return await _db.getSummaries().then((value) => value.reversed.toList());
   }
 

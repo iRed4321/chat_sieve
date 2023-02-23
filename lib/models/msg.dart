@@ -74,8 +74,6 @@ class Msg {
     return y;
   }
 
-  //fromJson
-
   Msg.fromJson(Map<String, dynamic> json) {
     postTime = json[msgsTimeId];
     sender = json[msgsSender];

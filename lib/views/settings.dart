@@ -80,7 +80,6 @@ class SettingsPage extends StatelessWidget {
                                   border: OutlineInputBorder(),
                                   isDense: true),
                               onChanged: (String value) async {
-                                // model.setConvName(value);
                                 Param.conversationName.set = value;
                                 model.makeUpdateUi();
                               },
