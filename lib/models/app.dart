@@ -7,17 +7,17 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pick_or_save/pick_or_save.dart';
-import 'package:shrink_that_conv/models/params.dart';
-import 'package:shrink_that_conv/models/people.dart';
-import 'package:shrink_that_conv/models/service.dart';
-import 'package:shrink_that_conv/models/view.dart';
 import 'package:flutter_notification_listener/flutter_notification_listener.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 import 'db.dart';
 import 'msg.dart';
+import 'params.dart';
+import 'people.dart';
+import 'service.dart';
 import 'summary.dart';
+import 'view.dart';
 
 extension LocalizedBuildContext on BuildContext {
   AppLocalizations get loc => AppLocalizations.of(this);

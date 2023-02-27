@@ -1,4 +1,4 @@
-package ired4321.shrink_that_conv
+package com.example.chat_sieve
 
 import io.flutter.embedding.android.FlutterActivity
 

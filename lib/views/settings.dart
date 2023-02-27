@@ -2,10 +2,9 @@ import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:awaitable_button/awaitable_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provider/provider.dart';
-import 'package:shrink_that_conv/models/params.dart';
 import '../models/app.dart';
+import '../models/params.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

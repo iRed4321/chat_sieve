@@ -10,36 +10,40 @@ class ServiceNotifListener {
   Future<bool> get isActive async => (await NotificationsListener.isRunning)!;
 
   Future startListening() async {
-    print("start listening");
-    PermissionStatus rep =
-        await NotificationPermissions.getNotificationPermissionStatus();
-    if (rep != PermissionStatus.granted) {
+    print("start listening function");
+
+    if (await NotificationPermissions.getNotificationPermissionStatus() !=
+        PermissionStatus.granted) {
       await NotificationPermissions.requestNotificationPermissions();
-      return;
     }
+
+    while (await NotificationPermissions.getNotificationPermissionStatus() !=
+        PermissionStatus.granted) {}
+
+    if (!await isActive) {
+      await NotificationsListener.startService(
+        foreground: true,
+        title: "ChatSieve",
+        description: "Listening for messages...",
+      );
+    }
+
     bool hasPermission = (await NotificationsListener.hasPermission)!;
     if (!hasPermission) {
       print("no notification read access permission, so open settings");
-      await NotificationsListener.openPermissionSettings();
-      return;
+      NotificationsListener.openPermissionSettings();
     }
 
-    if (!await isActive) {
-      await NotificationsListener.startService();
-    }
-
-    await NotificationsListener.promoteToForeground(
-      "Shrink That Conversation",
-    );
-
-    await Future.delayed(const Duration(seconds: 3));
+    while (!(await isActive)) {}
+    return;
   }
 
   Future stopListening() async {
     print("stop listening");
 
     await NotificationsListener.stopService();
-    await Future.delayed(const Duration(seconds: 3));
+    while (await isActive) {}
+    return;
   }
 
   @pragma('vm:entry-point')

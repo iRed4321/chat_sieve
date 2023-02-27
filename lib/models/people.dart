@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shrink_that_conv/models/db.dart';
+
+import 'db.dart';
 
 class Participant {
   late int id;
