@@ -28,8 +28,8 @@
     "peopleChange": "Modifier un pseudo",
     "cancel": "Annuler",
     "add": "Ajouter",
-    "realName": "Vrai nom",
-    "pseudoName": "Pseudo",
+    "realName": "A la place de",
+    "pseudoName": "Afficher",
     "aiIntro": "{prompt}. Cette conversation peut se résumer en ${nbPoints} points:",
     "@aiIntro": {
       "placeholders": {

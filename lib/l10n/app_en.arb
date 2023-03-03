@@ -31,8 +31,8 @@
     "peopleChange": "Change a nickname",
     "cancel": "Cancel",
     "add": "Add",
-    "realName": "Real name",
-    "pseudoName": "Nickname",
+    "realName": "Instead of",
+    "pseudoName": "Display",
     "aiIntro": "{prompt}. This conversation can be summarized in ${nbPoints} points:",
     "@aiIntro": {
       "placeholders": {
