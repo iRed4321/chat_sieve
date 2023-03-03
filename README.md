@@ -1,6 +1,6 @@
 # Chat Sieve
 
-Chat Sieve is a simple app that allows you to filter messages from your chat apps. It is currently in development and may not work as expected.
+Chat Sieve is a simple android app that allows you to summarize messages from your chat apps. It is currently in development and may not work as expected.
 
 ## Supported Apps
 
