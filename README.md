@@ -1,16 +1,25 @@
-# chat_sieve
+# Chat Sieve
 
-A new Flutter project.
+Chat Sieve is a simple app that allows you to filter messages from your chat apps. It is currently in development and may not work as expected.
 
-## Getting Started
+## Supported Apps
 
-This project is a starting point for a Flutter application.
+Facebook Messenger only.
+It is planned to support other apps in the future.
 
-A few resources to get you started if this is your first Flutter project:
+## Installation
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Requirements
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- A valid OpenAI API key
+- A valid up to date Flutter Environment
+
+### Steps
+
+1. Clone the repository
+2. Run `flutter pub get` to install dependencies
+3. Run `flutter run` to run the app in debug mode (or `flutter run --release` to run in release mode)
+
+
+
+
